@@ -9,29 +9,52 @@
 		<style type="text/css">
 			body {
 				padding: 10px;
+				font-size: 14px;
 			}
 			
 			select {
+				display: block;
+				padding: 0;
 				width: 200px;
-				height: 36px;
+				height: 26px;
 				border-radius: 3px;
-				font-size: 17px;
+				border: solid 1px rgb(169, 169, 169);
 				text-align: center;
-				margin: 5px 10px 0 0;
+				margin-bottom: 5px; 
 			}
 			
-			input {
-				padding: 4px;
-				font-size: 17px;
-				width: 300px;
-				height: 28px;
+			.map-warp {
+				position: relative;
+			}
+			
+			.select-warp {
+				position: absolute;
+				left: 70px;
+				top: 8px;
+				background-color: white;
+				z-index: 99;
+				padding: 8px;
+				border: solid 1px rgb(169, 169, 169);
+			}
+			
+			.select-warp label {
+				display: block;
+				font-size: 14px;
+			}
+			
+			.select-warp input {
 				border-radius: 3px;
+				padding: 4px;
+				font-size: 14px;
+				width: 190px;
+				height: 15px;
 				text-shadow: none;
 				outline: none;
-				border: solid 1px darkgray;
-				margin: 5px 0;
+				border: solid 1px rgb(169, 169, 169);
+				margin-top: 5px;
 			}
-			#address-info{
+			
+			#address-info {
 				font-size: 17px;
 				margin: 10px 0;
 				height: 50px;
@@ -45,20 +68,29 @@
 
 	<body>
 		<div id="body-container">
-			<div id="address-select-row" class="">
-				<select class="province" name="province">
-					<option value="0">请选择省份</option>
-				</select>
-				<select class="city" name="city">
-					<option value="0">请选择城市</option>
-				</select>
-				<select class="district" name="district">
-					<option value="0">请选择区县</option>
-				</select>
-			</div>
-			<input id="tipinput" type="text" />
+
 			<div id="address-info"></div>
-			<div id="map-container" style="width:600px; height:400px"></div>
+			<div class="map-warp">
+				<div class="select-warp">
+					<div id="address-select-row" class="">
+						<select class="province" name="province">
+							<option value="0">请选择省份</option>
+						</select>
+						<select class="city" name="city">
+							<option value="0">请选择城市</option>
+						</select>
+						<select class="district" name="district">
+							<option value="0">请选择区县</option>
+						</select>
+					</div>
+					<label class="">
+						输入地名查找:
+					</label>
+					<input id="tipinput" type="text" />
+				</div>
+				<div id="map-container" style="width:800px; height:600px"></div>
+			</div>
+
 		</div>
 
 	</body>
@@ -88,14 +120,14 @@
 			console.log(e);
 			//经纬度
 			var lngX = e.event.lnglat.getLng();
-			var latY = e.event.lnglat.getLat(); 
+			var latY = e.event.lnglat.getLat();
 			//地址名称
 			var pname = e.data.pname;
 			var cityname = e.data.cityname;
 			var adname = e.data.adname;
 			var address = e.data.address;
 			var name = e.data.name;
-			var addInfo = '所选地址是：' + pname + ' ' + cityname + ' ' + adname + ' ' + address + ' ' + name + ';<br/>经度：'+lngX+',维度:'+latY;
+			var addInfo = '所选地址是：' + pname + ' ' + cityname + ' ' + adname + ' ' + address + ' ' + name + ';<br/>经度：' + lngX + ',维度:' + latY;
 			console.log(addInfo);
 			$('#address-info').html(addInfo)
 		});
