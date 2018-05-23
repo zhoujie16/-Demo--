@@ -13,14 +13,15 @@
 			}
 			
 			select {
-				display: block;
+				/*display: block;*/
 				padding: 0;
 				width: 200px;
 				height: 26px;
 				border-radius: 3px;
 				border: solid 1px rgb(169, 169, 169);
 				text-align: center;
-				margin-bottom: 5px; 
+				margin-bottom: 5px;
+				margin-right: 5px; 
 			}
 			
 			.map-warp {
@@ -38,7 +39,6 @@
 			}
 			
 			.select-warp label {
-				display: block;
 				font-size: 14px;
 			}
 			
@@ -73,6 +73,7 @@
 			<div class="map-warp">
 				<div class="select-warp">
 					<div id="address-select-row" class="">
+						<label class="">选择区域:</label>
 						<select class="province" name="province">
 							<option value="0">请选择省份</option>
 						</select>
@@ -83,9 +84,7 @@
 							<option value="0">请选择区县</option>
 						</select>
 					</div>
-					<label class="">
-						输入地名查找:
-					</label>
+					<label class="">详细地址:</label>
 					<input id="tipinput" type="text" />
 				</div>
 				<div id="map-container" style="width:800px; height:600px"></div>
