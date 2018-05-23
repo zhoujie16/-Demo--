@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<!--<link rel="stylesheet" type="text/css" href="css/mui.css"/>-->
+		<style type="text/css">
+			body {
+				padding: 10px;
+			}
+			
+			select {
+				width: 200px;
+				height: 36px;
+				border-radius: 3px;
+				font-size: 17px;
+				text-align: center;
+				margin: 5px 10px 0 0;
+			}
+			
+			input {
+				padding: 4px;
+				font-size: 17px;
+				width: 300px;
+				height: 28px;
+				border-radius: 3px;
+				text-shadow: none;
+				outline: none;
+				border: solid 1px darkgray;
+				margin: 5px 0;
+			}
+			#address-info{
+				font-size: 17px;
+				margin: 10px 0;
+				height: 50px;
+			}
+		</style>
+		<script type="text/javascript" src="http://webapi.amap.com/maps?v=1.4.6&key=a5f2b3ed53be13b198257593c8b056b8&plugin=AMap.Autocomplete,AMap.PlaceSearch"></script>
+		<script type="text/javascript" src="http://cache.amap.com/lbs/static/addToolbar.js"></script>
+		<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+		<script src="js/addAddress.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+
+	<body>
+		<div id="body-container">
+			<div id="address-select-row" class="">
+				<select class="province" name="province">
+					<option value="0">请选择省份</option>
+				</select>
+				<select class="city" name="city">
+					<option value="0">请选择城市</option>
+				</select>
+				<select class="district" name="district">
+					<option value="0">请选择区县</option>
+				</select>
+			</div>
+			<input id="tipinput" type="text" />
+			<div id="address-info"></div>
+			<div id="map-container" style="width:600px; height:400px"></div>
+		</div>
+
+	</body>
+	<script type="text/javascript">
+		var map = new AMap.Map('map-container', {
+			zoom: 3,
+			resizeEnable: true,
+		});
+		//输入提示
+		var autoOptions = {
+			city: "", //城市，默认全国,
+			input: "tipinput"
+		};
+		var auto = new AMap.Autocomplete(autoOptions);
+		var placeSearch = new AMap.PlaceSearch({
+			map: map
+		});
+		//构造地点查询类
+		AMap.event.addListener(auto, "select", select);
+		//注册监听，当选中某条记录时会触发
+		function select(e) {
+			placeSearch.setCity(e.poi.adcode);
+			placeSearch.search(e.poi.name); //关键字查询查询
+		}
+		//markerClick
+		placeSearch.on('markerClick', function(e) {
+			console.log(e);
+			//经纬度
+			var lngX = e.event.lnglat.getLng();
+			var latY = e.event.lnglat.getLat(); 
+			//地址名称
+			var pname = e.data.pname;
+			var cityname = e.data.cityname;
+			var adname = e.data.adname;
+			var address = e.data.address;
+			var name = e.data.name;
+			var addInfo = '所选地址是：' + pname + ' ' + cityname + ' ' + adname + ' ' + address + ' ' + name + ';<br/>经度：'+lngX+',维度:'+latY;
+			console.log(addInfo);
+			$('#address-info').html(addInfo)
+		});
+		map.on('click', function(e) {
+			console.log(e);
+		});
+	</script>
+	<script type="text/javascript">
+		addressInit({
+			id: 'address-select-row',
+			provinceChange: function(code) {
+				map.setCity(code);
+				$('#tipinput').val('');
+			},
+			cityChange: function(code) {
+				map.setCity(code);
+				$('#tipinput').val('');
+			},
+			districtChange: function(code) {
+				map.setCity(code);
+				autoOptions.city = code;
+				$('#tipinput').val('');
+			}
+		})
+
+		function addressInit(params) {
+			var $addressSelectRow = $('#' + params.id);
+			var $province = $addressSelectRow.find('.province');
+			var $city = $addressSelectRow.find('.city');
+			var $district = $addressSelectRow.find('.district');
+
+			// 添加省份选项
+			addOptions($province, city1);
+
+			$province.on('change', function(e) {
+				var val = $province.val();
+				var obj = {};
+				$.each(city2, function(key, item) {
+					if(val === key) {
+						obj = item;
+					}
+				});
+				addOptions($city, obj);
+				params.provinceChange(val);
+			});
+
+			$city.on('change', function(e) {
+				var val = $city.val();
+				var obj = {};
+				$.each(city3, function(key, item) {
+					if(val === key) {
+						obj = item;
+					}
+				});
+				addOptions($district, obj);
+				params.cityChange(val);
+			});
+			$district.on('change', function(e) {
+				var val = $district.val();
+				params.districtChange(val);
+			})
+
+			function addOptions($el, obj) {
+				cleanOption($el);
+				$.each(obj, function(key, val) {
+					var option = document.createElement("OPTION");
+					option.innerHTML = val;
+					option.value = key;
+					$el.append($(option))
+				});
+			}
+
+			function cleanOption($el) {
+				var $opts = $el.find('option');
+				$.each($opts, function(i, opt) {
+					if(opt.value !== '0') {
+						$(opt).remove();
+					}
+				});
+			}
+
+		}
+	</script>
+
+</html>
